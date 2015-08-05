@@ -1,28 +1,29 @@
+import uuid
 from django.db import models
 
 
-class Instructor(models.User):
+class Instructor(models.Model):
 	id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 	ucinetid = models.TextField(blank=False)
 	email = models.EmailField(blank=False)
 	first_name = models.TextField(blank=False)
 	last_name = models.TextField(blank=False)
-	courses = models.ManyToManyField(Course)
-	sections = models.ManyToManyField(Section)
+	courses = models.ManyToManyField('Course')
+	sections = models.ManyToManyField('Section')
 
 
-class Student(models.User):
+class Student(models.Model):
 	id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 	ucinetid = models.TextField(blank=False)
 	email = models.EmailField(blank=False)
 	first_name = models.TextField(blank=False)
 	last_name = models.TextField(blank=False)
 	studentid = models.PositiveIntegerField(blank=False)
-	courses = models.ManyToManyField(Course)
-	sections = models.ManyToManyField(Section)
+	courses = models.ManyToManyField('Course')
+	sections = models.ManyToManyField('Section')
 
 
-class Quarter(models.User):
+class Quarter(models.Model):
 	id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 	name = models.TextField(blank=False)
 
@@ -33,67 +34,67 @@ class Course(models.Model):
 	full_name = models.TextField(blank=False)
 	abbr_name = models.TextField()
 	location = models.TextField()
-	quarter = models.ForeignKey(Quarter)
-	instructors = models.ManyToManyField(Instructor)
-	students = models.ManyToManyField(Student)
+	quarter = models.ForeignKey('Quarter')
+	instructors = models.ManyToManyField('Instructor')
+	students = models.ManyToManyField('Student')
 
 
 class Section(models.Model):
 	id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 	name = models.TextField(blank=False)
 	number = models.IntegerField(blank=False)
-	course = models.ForeignKey(Course)
-	instructors = models.ManyToManyField(Instructor)
-	students = models.ManyToManyField(Student)
+	course = models.ForeignKey('Course')
+	instructors = models.ManyToManyField('Instructor')
+	students = models.ManyToManyField('Student')
 
 
 class Assignment(models.Model):
 	id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 	title = models.TextField(blank=False)
-	total_value = models.DecimalField(blank=False)
+	total_value = models.DecimalField(blank=False, max_digits=10, decimal_places=5)
 	is_discrete = models.BooleanField(blank=False)
-	upper_bound = models.DecimalField(default=0.0)
-	lower_bound = models.DecimalField(default=100.0)
-	discrete_score_system = models.ForeignKey(DiscreteScoreSystem)
-	assignment_type = models.ForeignKey(AssignmentType)
-	course = models.ForeignKey(Course)
+	upper_bound = models.DecimalField(default=0.0, max_digits=10, decimal_places=5)
+	lower_bound = models.DecimalField(default=100.0, max_digits=10, decimal_places=5)
+	discrete_score_system = models.ForeignKey('DiscreteScoreSystem')
+	assignment_type = models.ForeignKey('AssignmentType')
+	course = models.ForeignKey('Course')
 
 
 class AssignmentType(models.Model):
 	id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 	name = models.TextField(blank=False)
-	weight = models.DecimalField(blank=False)
-	course = models.ForeignKey(Course)
+	weight = models.DecimalField(blank=False, max_digits=10, decimal_places=5)
+	course = models.ForeignKey('Course')
 
 
 class ContinuousScore(models.Model):
 	id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-	value = models.DecimalField(blank=False)
-	assignment = models.ForeignKey(Assignment)
-	student = models.ForeignKey(Student)
+	value = models.DecimalField(blank=False, max_digits=10, decimal_places=5)
+	assignment = models.ForeignKey('Assignment')
+	student = models.ForeignKey('Student')
 
 
 class DiscreteScore(models.Model):
 	id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-	assignment = models.ForeignKey(Assignment)
-	student = models.ForeignKey(Student)
-	value = models.ForeignKey(DiscreteScoreType)
+	assignment = models.ForeignKey('Assignment')
+	student = models.ForeignKey('Student')
+	value = models.ForeignKey('DiscreteScoreType')
 
 
 class DiscreteScoreSystem(models.Model):
 	id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-	course = models.ForeignKey(Course)
-	possible_values = models.ManyToMany(DiscreteScoreType)
+	course = models.ForeignKey('Course')
+	possible_values = models.ManyToManyField('DiscreteScoreType')
 
 
 class DiscreteScoreType(models.Model):
 	id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-	numeric_value = models.DecimalField()
+	numeric_value = models.DecimalField(max_digits=10, decimal_places=5)
 	text_value = models.TextField()
 	image_value = models.ImageField()
-	real_value = models.DecimalField()
-	course = models.ForeignKey(Course)
-	score_system = models.ManyToManyField(DiscreteScoreSystem)
+	real_value = models.DecimalField(max_digits=10, decimal_places=5)
+	course = models.ForeignKey('Course')
+	score_system = models.ManyToManyField('DiscreteScoreSystem')
 
 
 
