@@ -3,8 +3,8 @@
 ################################################################################
 
 
-from django.contrib import admin
-from score_book.models import * 
+from django.http import HttpResponse
+from django.shortcuts import render
 
 
 ################################################################################
@@ -13,15 +13,19 @@ from score_book.models import *
 
 
 ################################################################################
-## ADMIN CONFIG ################################################################
+## VIEWS #######################################################################
 ################################################################################
 
 
-admin.site.register(Course)
-admin.site.register(Instructor)
-admin.site.register(Quarter)
-admin.site.register(Section)
-admin.site.register(Student)
+def index(request):
+	"""
+	Defines view for the landing page of this application.
+	"""
+	return render(request, 'common.html', {})
+
+
+def login(request):
+	pass
 
 
 ################################################################################
