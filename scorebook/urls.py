@@ -20,6 +20,7 @@ from scorebook import views
 
 urlpatterns = [
 	url(r'^$', views.index, name='index'),
-    url(r'^admin/', include(admin.site.urls), name='admin'),
+	url(r'^admin/', include(admin.site.urls), name='admin'),
+	url(r'^logout/', views.logout, name='logout'),
 	url(r'^scorebook/', include('score_book.urls'), name='scorebook'),
 ]

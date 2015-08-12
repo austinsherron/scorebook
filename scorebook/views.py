@@ -3,8 +3,10 @@
 ################################################################################
 
 
+from django.contrib import auth
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 
 ################################################################################
@@ -20,12 +22,37 @@ from django.shortcuts import render
 def index(request):
 	"""
 	Defines view for the landing page of this application.
+	This view will change when app is in production: UCI's
+	auth system will be used instead of Django's.
 	"""
-	return render(request, 'common.html', {})
+	user = request.user
+	context = {'user': user}
+
+	if 'error' in request.session:
+		context['error'] = request.session.pop('error')
+
+	if request.method == 'POST':
+		if 'login' in request.POST:
+			username = request.POST['username']
+			password = request.POST['password']
+			user = auth.authenticate(username=username, password=password)
+			if user:
+				auth.login(request, user)
+				return redirect('../scorebook')
+			else:
+				context['error'] = 'Username or password is incorrect'
+				return render(request, 'login.html', context)
+	else:
+		return render(request, 'login.html', context)
 
 
-def login(request):
-	pass
+@login_required
+def logout(request):
+	"""
+	This is a temporary view for development. Logs a user out.
+	"""
+	auth.logout(request)
+	return redirect('../')
 
 
 ################################################################################

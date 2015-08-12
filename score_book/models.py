@@ -21,7 +21,7 @@ from django.db import models
 class Instructor(models.Model):
 
 	id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-	ucinetid = models.TextField(blank=False)
+	ucinetid = models.TextField(blank=False, unique=True)
 #	email = models.EmailField(blank=False)			# temporarily commented out for development 			
 #	first_name = models.TextField(blank=False)
 #	last_name = models.TextField(blank=False)
@@ -47,12 +47,12 @@ class Instructor(models.Model):
 class Student(models.Model):
 
 	id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-	ucinetid = models.TextField(blank=False)
+	ucinetid = models.TextField(blank=False, unique=True)
 #	email = models.EmailField(blank=False)			# temporarily commented out for development 			
 #	first_name = models.TextField(blank=False)
 #	last_name = models.TextField(blank=False)
 	preferred_name = models.TextField(default='')
-	studentid = models.PositiveIntegerField(blank=False)
+	studentid = models.PositiveIntegerField(blank=False, unique=True)
 	courses = models.ManyToManyField('Course', blank=True)
 	sections = models.ManyToManyField('Section', blank=True)
 	user = models.ForeignKey(User)
@@ -64,7 +64,7 @@ class Student(models.Model):
 
 
 	def __str__(self):
-		return '{}, {} - {} (instructor)'.format(
+		return '{}, {} - {}'.format(
 			self.user.last_name,
 			self.user.first_name,
 			self.ucinetid
