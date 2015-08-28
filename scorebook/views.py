@@ -7,6 +7,7 @@ from django.contrib import auth
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
+from score_book.helpers import *
 
 
 ################################################################################
@@ -27,6 +28,7 @@ def index(request):
 	"""
 	user = request.user
 	context = {'user': user}
+	context = request_to_context(context, request, 'student', 'instructor')
 
 	if 'error' in request.session:
 		context['error'] = request.session.pop('error')
@@ -51,6 +53,12 @@ def logout(request):
 	"""
 	This is a temporary view for development. Logs a user out.
 	"""
+	if 'student' in request.session:
+		request.session.pop('student')
+
+	if 'instructor' in request.session:
+		request.session.pop('instructor')
+
 	auth.logout(request)
 	return redirect('../')
 

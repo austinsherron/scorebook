@@ -3,9 +3,23 @@
 {% block content %}
 
 <div class='row'>
+
 	<div class='small-6 columns small-offset-4'>
-		<h1>Hello, {{ instructor.preferred_name }}</h1>
+		<h1 id='name'>Hello, {{ instructor.preferred_name }}</h1>
 	</div>
+
+	<div class='panel small-12 columns'>
+		<ul class='tabs' data-tab>
+			<li class='tab-title active'><a href='#student_tab'>Students</a></li>
+			<li class='tab-title'><a href='#assignment_tab'>Assignments</a></li>
+		</ul>
+		<div class='tabs-content'>
+			<div class='content active' id='student_tab'>
+			<div class='content' id='assignment_tab'>
+			</div>
+		</div>
+	</div>
+
 </div>
 
 {% endblock %}

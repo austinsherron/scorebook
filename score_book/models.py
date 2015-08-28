@@ -40,8 +40,7 @@ class Instructor(models.Model):
 		return '{}, {} - {} (instructor)'.format(
 			self.user.last_name,
 			self.user.first_name,
-			self.ucinetid
-		)
+			self.ucinetid)
 
 
 class Student(models.Model):
@@ -67,14 +66,15 @@ class Student(models.Model):
 		return '{}, {} - {}'.format(
 			self.user.last_name,
 			self.user.first_name,
-			self.ucinetid
-		)
+			self.ucinetid)
 
 
 class Quarter(models.Model):
 	id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 	name = models.TextField(blank=False)
 	number = models.IntegerField(blank=False)
+	start = models.DateField()
+	end = models.DateField()
 
 	class Meta:
 		ordering = ['number']
